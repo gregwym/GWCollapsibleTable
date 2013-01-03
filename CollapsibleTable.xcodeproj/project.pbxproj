@@ -18,6 +18,7 @@
 		2504F021169640B200D3D1A3 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2504F020169640B200D3D1A3 /* Default-568h@2x.png */; };
 		2504F024169640B200D3D1A3 /* MainStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2504F022169640B200D3D1A3 /* MainStoryboard.storyboard */; };
 		2504F027169640B200D3D1A3 /* GWViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2504F026169640B200D3D1A3 /* GWViewController.m */; };
+		2504F0351696423E00D3D1A3 /* NSObject+GWCollapsibleTable.m in Sources */ = {isa = PBXBuildFile; fileRef = 2504F0341696423E00D3D1A3 /* NSObject+GWCollapsibleTable.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +38,9 @@
 		2504F023169640B200D3D1A3 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/MainStoryboard.storyboard; sourceTree = "<group>"; };
 		2504F025169640B200D3D1A3 /* GWViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GWViewController.h; sourceTree = "<group>"; };
 		2504F026169640B200D3D1A3 /* GWViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GWViewController.m; sourceTree = "<group>"; };
+		2504F02E1696411200D3D1A3 /* GWCollapsibleTable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GWCollapsibleTable.h; sourceTree = "<group>"; };
+		2504F0331696423E00D3D1A3 /* NSObject+GWCollapsibleTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+GWCollapsibleTable.h"; sourceTree = "<group>"; };
+		2504F0341696423E00D3D1A3 /* NSObject+GWCollapsibleTable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+GWCollapsibleTable.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -83,6 +87,7 @@
 		2504F010169640B100D3D1A3 /* CollapsibleTable */ = {
 			isa = PBXGroup;
 			children = (
+				2504F02D169640BE00D3D1A3 /* GWCollapsibleTable */,
 				2504F019169640B200D3D1A3 /* GWAppDelegate.h */,
 				2504F01A169640B200D3D1A3 /* GWAppDelegate.m */,
 				2504F022169640B200D3D1A3 /* MainStoryboard.storyboard */,
@@ -105,6 +110,16 @@
 				2504F020169640B200D3D1A3 /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		2504F02D169640BE00D3D1A3 /* GWCollapsibleTable */ = {
+			isa = PBXGroup;
+			children = (
+				2504F02E1696411200D3D1A3 /* GWCollapsibleTable.h */,
+				2504F0331696423E00D3D1A3 /* NSObject+GWCollapsibleTable.h */,
+				2504F0341696423E00D3D1A3 /* NSObject+GWCollapsibleTable.m */,
+			);
+			path = GWCollapsibleTable;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -177,6 +192,7 @@
 				2504F017169640B100D3D1A3 /* main.m in Sources */,
 				2504F01B169640B200D3D1A3 /* GWAppDelegate.m in Sources */,
 				2504F027169640B200D3D1A3 /* GWViewController.m in Sources */,
+				2504F0351696423E00D3D1A3 /* NSObject+GWCollapsibleTable.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -293,6 +309,7 @@
 				2504F02C169640B200D3D1A3 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
