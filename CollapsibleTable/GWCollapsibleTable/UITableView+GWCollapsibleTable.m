@@ -36,4 +36,16 @@ static NSString * const GWExpendedSectionsSet = @"GWExpendedSectionsSet";
 	objc_setAssociatedObject(self, (__bridge const void *)(GWExpendedSectionsSet), expandedSections, OBJC_ASSOCIATION_RETAIN);
 }
 
+#pragma mark - UITableView Methods Substitution
+
+- (UITableViewCell *)headerCellForSection:(NSInteger)section
+{
+	return [self cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:section]];
+}
+
+- (UITableViewCell *)bodyCellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	return [self cellForRowAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row + 1 inSection:indexPath.section]];
+}
+
 @end

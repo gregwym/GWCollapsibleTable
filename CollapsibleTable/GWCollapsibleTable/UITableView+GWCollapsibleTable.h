@@ -11,4 +11,7 @@
 @property (nonatomic, strong, readonly) NSIndexSet *expandedSections;
 - (NSMutableIndexSet *)getExpendedSections;
 
+- (UITableViewCell *)headerCellForSection:(NSInteger)section;
+- (UITableViewCell *)bodyCellForRowAtIndexPath:(NSIndexPath *)indexPath;
+
 @end
