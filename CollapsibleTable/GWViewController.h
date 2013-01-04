@@ -6,8 +6,10 @@
 //  Copyright (c) 2013年 Greg Wang. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import "GWCollapsibleTable.h"
 
-@interface GWViewController : UIViewController
+@interface GWViewController : UIViewController <GWCollapsibleTableDelegate, GWCollapsibleTableDataSource>
+
+@property (nonatomic, weak) IBOutlet UITableView *tableView;
 
 @end

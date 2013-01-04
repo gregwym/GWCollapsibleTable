@@ -14,6 +14,8 @@
 
 @implementation GWViewController
 
+@synthesize tableView = _tableView;
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -24,6 +26,50 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+#pragma mark - GWCollapsibleTable Data Source
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+	return 3;
+}
+
+- (BOOL)tableView:(UITableView *)tableView canCollapseSection:(NSInteger)section
+{
+	return YES;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView headerCellForCollapsibleSection:(NSInteger)section
+{
+	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"headerCell"];
+	if (cell == nil) {
+		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"headerCell"];
+		cell.textLabel.text = @"Header";
+	}
+	return cell;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView bodyCellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"bodyCell"];
+	if (cell == nil) {
+		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"bodyCell"];
+		cell.textLabel.text = @"Body";
+	}
+	return cell;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfBodyRowsInSection:(NSInteger)section
+{
+	return 3;
+}
+
+#pragma mark - GWCollapsibleTable Delegate
+
+- (void)tableView:(UITableView *)tableView didSelectBodyRowAtIndexPath:(NSIndexPath *)indexPath
+{
+	
 }
 
 @end
