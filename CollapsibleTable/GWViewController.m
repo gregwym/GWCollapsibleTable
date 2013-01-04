@@ -72,4 +72,14 @@
 	
 }
 
+- (void)tableView:(UITableView *)tableView willCollapseSection:(NSInteger)section
+{
+	[tableView headerCellForSection:section].textLabel.text = @"Collapsed Section";
+}
+
+- (void)tableView:(UITableView *)tableView willExpandSection:(NSInteger)section
+{
+	[tableView headerCellForSection:section].textLabel.text = @"Expanded Section";	
+}
+
 @end
