@@ -46,6 +46,7 @@
 	if (cell == nil) {
 		cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"headerCell"];
 		cell.textLabel.text = @"Header";
+		cell.accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"UITableCollapsed"]];
 	}
 	return cell;
 }
@@ -75,11 +76,13 @@
 - (void)tableView:(UITableView *)tableView willCollapseSection:(NSInteger)section
 {
 	[tableView headerCellForSection:section].textLabel.text = @"Collapsed Section";
+	[tableView headerCellForSection:section].accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"UITableCollapsed"]];
 }
 
 - (void)tableView:(UITableView *)tableView willExpandSection:(NSInteger)section
 {
-	[tableView headerCellForSection:section].textLabel.text = @"Expanded Section";	
+	[tableView headerCellForSection:section].textLabel.text = @"Expanded Section";
+	[tableView headerCellForSection:section].accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"UITableExpanded"]];
 }
 
 @end

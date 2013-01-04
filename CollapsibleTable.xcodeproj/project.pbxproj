@@ -20,6 +20,10 @@
 		2504F027169640B200D3D1A3 /* GWViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2504F026169640B200D3D1A3 /* GWViewController.m */; };
 		2504F0351696423E00D3D1A3 /* NSObject+GWCollapsibleTable.m in Sources */ = {isa = PBXBuildFile; fileRef = 2504F0341696423E00D3D1A3 /* NSObject+GWCollapsibleTable.m */; };
 		2504F03D1697584800D3D1A3 /* UITableView+GWCollapsibleTable.m in Sources */ = {isa = PBXBuildFile; fileRef = 2504F03C1697584800D3D1A3 /* UITableView+GWCollapsibleTable.m */; };
+		2504F04A1697676000D3D1A3 /* UITableCollapsed.png in Resources */ = {isa = PBXBuildFile; fileRef = 2504F0461697675F00D3D1A3 /* UITableCollapsed.png */; };
+		2504F04B1697676000D3D1A3 /* UITableCollapsed@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2504F0471697675F00D3D1A3 /* UITableCollapsed@2x.png */; };
+		2504F04C1697676000D3D1A3 /* UITableExpanded.png in Resources */ = {isa = PBXBuildFile; fileRef = 2504F0481697676000D3D1A3 /* UITableExpanded.png */; };
+		2504F04D1697676000D3D1A3 /* UITableExpanded@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2504F0491697676000D3D1A3 /* UITableExpanded@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +48,10 @@
 		2504F0341696423E00D3D1A3 /* NSObject+GWCollapsibleTable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+GWCollapsibleTable.m"; sourceTree = "<group>"; };
 		2504F03B1697584800D3D1A3 /* UITableView+GWCollapsibleTable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITableView+GWCollapsibleTable.h"; sourceTree = "<group>"; };
 		2504F03C1697584800D3D1A3 /* UITableView+GWCollapsibleTable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITableView+GWCollapsibleTable.m"; sourceTree = "<group>"; };
+		2504F0461697675F00D3D1A3 /* UITableCollapsed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = UITableCollapsed.png; sourceTree = "<group>"; };
+		2504F0471697675F00D3D1A3 /* UITableCollapsed@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "UITableCollapsed@2x.png"; sourceTree = "<group>"; };
+		2504F0481697676000D3D1A3 /* UITableExpanded.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = UITableExpanded.png; sourceTree = "<group>"; };
+		2504F0491697676000D3D1A3 /* UITableExpanded@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "UITableExpanded@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,6 +112,10 @@
 		2504F011169640B100D3D1A3 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				2504F0461697675F00D3D1A3 /* UITableCollapsed.png */,
+				2504F0471697675F00D3D1A3 /* UITableCollapsed@2x.png */,
+				2504F0481697676000D3D1A3 /* UITableExpanded.png */,
+				2504F0491697676000D3D1A3 /* UITableExpanded@2x.png */,
 				2504F012169640B100D3D1A3 /* CollapsibleTable-Info.plist */,
 				2504F013169640B100D3D1A3 /* InfoPlist.strings */,
 				2504F016169640B100D3D1A3 /* main.m */,
@@ -184,6 +196,10 @@
 				2504F01F169640B200D3D1A3 /* Default@2x.png in Resources */,
 				2504F021169640B200D3D1A3 /* Default-568h@2x.png in Resources */,
 				2504F024169640B200D3D1A3 /* MainStoryboard.storyboard in Resources */,
+				2504F04A1697676000D3D1A3 /* UITableCollapsed.png in Resources */,
+				2504F04B1697676000D3D1A3 /* UITableCollapsed@2x.png in Resources */,
+				2504F04C1697676000D3D1A3 /* UITableExpanded.png in Resources */,
+				2504F04D1697676000D3D1A3 /* UITableExpanded@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
