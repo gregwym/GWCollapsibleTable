@@ -8,34 +8,8 @@
 
 #import "NSObject+GWCollapsibleTable.h"
 #import "GWCollapsibleTable.h"
-#import "objc/runtime.h"
-
-static NSString * const GWCollapsedSectionsSet = @"GWCollapsedSectionsSet";
 
 @implementation NSObject (GWCollapsibleTable)
-
-#pragma mark - Getter & Setter
-
-- (NSMutableIndexSet *)getCollapsedSections
-{
-	NSMutableIndexSet *collapsedSectionsSet = objc_getAssociatedObject(self, (__bridge const void *)(GWCollapsedSectionsSet));
-	if (collapsedSectionsSet == nil) {
-		collapsedSectionsSet = [[NSMutableIndexSet alloc] init];
-		[self setCollapsedSections:collapsedSectionsSet];
-	}
-	return collapsedSectionsSet;
-}
-
-- (NSIndexSet *)collapsedSections
-{
-	return [self getCollapsedSections];
-}
-
-- (void)setCollapsedSections:(NSIndexSet *)collapsedSections
-{
-	objc_setAssociatedObject(self, (__bridge const void *)(GWCollapsedSectionsSet), nil, OBJC_ASSOCIATION_RETAIN);
-	objc_setAssociatedObject(self, (__bridge const void *)(GWCollapsedSectionsSet), collapsedSections, OBJC_ASSOCIATION_RETAIN);
-}
 
 #pragma mark - General Helpers
 
@@ -44,7 +18,7 @@ static NSString * const GWCollapsedSectionsSet = @"GWCollapsedSectionsSet";
 	if (tableView.dataSource != nil && [tableView.dataSource conformsToProtocol:@protocol(GWCollapsibleTableDataSource)]) {
 		return (id<GWCollapsibleTableDataSource>)tableView.dataSource;
 	}
-	abort();
+//	abort();
 	return nil;
 }
 
@@ -53,13 +27,41 @@ static NSString * const GWCollapsedSectionsSet = @"GWCollapsedSectionsSet";
 	if (tableView.delegate != nil && [tableView.delegate conformsToProtocol:@protocol(GWCollapsibleTableDelegate)]) {
 		return (id<GWCollapsibleTableDelegate>)tableView.delegate;
 	}
-	abort();
+//	abort();
 	return nil;
 }
 
-- (void)toggleSection:(NSInteger)section
+- (void)tableView:(UITableView *)tableView toggleSection:(NSInteger)section
 {
-	// TODO
+	id<GWCollapsibleTableDataSource> dataSource = [self collapsibleTableDataSourceWithTableView:tableView];
+	id<GWCollapsibleTableDelegate> delegate = [self collapsibleTableDelegateWithTableView:tableView];
+
+	if ([dataSource tableView:tableView canCollapseSection:section]) {
+		// Prepare index paths
+		NSUInteger numberOfBodyRows = [dataSource tableView:tableView numberOfBodyRowsInSection:section];
+		NSMutableArray *indexPaths = [NSMutableArray arrayWithCapacity:numberOfBodyRows];
+		for (NSInteger i = 1; i <= numberOfBodyRows; i++) {
+			[indexPaths addObject:[NSIndexPath indexPathForRow:i inSection:section]];
+		}
+		// Expand or collapse
+		NSMutableIndexSet *expandedSections = [tableView getExpendedSections];
+		if ([expandedSections containsIndex:section]) {
+			if ([delegate respondsToSelector:@selector(tableView:willCollapseSection:)]) {
+				[delegate tableView:tableView willCollapseSection:section];
+			}
+			// Collapse the section
+			[expandedSections removeIndex:section];
+			[tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+		}
+		else {
+			if ([delegate respondsToSelector:@selector(tableView:willExpandSection:)]) {
+				[delegate tableView:tableView willExpandSection:section];
+			}
+			// Expand the section
+			[expandedSections addIndex:section];
+			[tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
+		}
+	}
 }
 
 #pragma mark - Table View Data Source
@@ -80,7 +82,7 @@ static NSString * const GWCollapsedSectionsSet = @"GWCollapsedSectionsSet";
 {
 	id<GWCollapsibleTableDataSource> dataSource = [self collapsibleTableDataSourceWithTableView:tableView];
 	if ([dataSource tableView:tableView canCollapseSection:section]) {
-		if ([self.collapsedSections containsIndex:section]) {
+		if (![tableView.expandedSections containsIndex:section]) {
 			return 1;
 		}
 		return [dataSource tableView:tableView numberOfBodyRowsInSection:section] + 1;
@@ -96,7 +98,7 @@ static NSString * const GWCollapsedSectionsSet = @"GWCollapsedSectionsSet";
 	id<GWCollapsibleTableDelegate> delegate = [self collapsibleTableDelegateWithTableView:tableView];
 	if ([dataSource tableView:tableView canCollapseSection:indexPath.section]) {
 		if (indexPath.row == 0) {
-			[self toggleSection:indexPath.section];
+			[self tableView:tableView toggleSection:indexPath.section];
 		}
 		else {
 			[delegate tableView:tableView didSelectBodyRowAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row - 1 inSection:indexPath.section]];
