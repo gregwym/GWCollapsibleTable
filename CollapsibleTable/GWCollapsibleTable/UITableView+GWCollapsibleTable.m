@@ -7,45 +7,179 @@
 //
 
 #import "UITableView+GWCollapsibleTable.h"
+#import "GWCollapsibleTable.h"
 #import "objc/runtime.h"
 
-static NSString * const GWExpendedSectionsSet = @"GWExpendedSectionsSet";
+
+static NSString * const GWExpandedSectionsSet = @"GWExpendedSectionsSet";
+
+
+@interface UITableView ()
+
+@property (nonatomic, strong) NSMutableIndexSet *mutableExpandedSections;
+
+@end
+
 
 @implementation UITableView (GWCollapsibleTable)
 
-#pragma mark - Getter & Setter
+#pragma mark - Collapsing & Expanding Section
 
-- (NSMutableIndexSet *)getExpendedSections
+- (void)toggleSection:(NSInteger)section
 {
-	NSMutableIndexSet *expandedSectionsSet = objc_getAssociatedObject(self, (__bridge const void *)(GWExpendedSectionsSet));
-	if (expandedSectionsSet == nil) {
-		expandedSectionsSet = [[NSMutableIndexSet alloc] init];
-		[self setExpendedSections:expandedSectionsSet];
+    if ([self.collapsibleTableDataSource tableView:self canCollapseSection:section]) {
+        // Prepare index paths
+        NSArray *bodyIndexPathes = [self bodyRowIndexPathesForSection:section];
+        // Expand or collapse
+        if ([self.mutableExpandedSections containsIndex:section]) {
+            if ([self.collapsibleTableDelegate respondsToSelector:@selector(tableView:willCollapseSection:)]) {
+                [self.collapsibleTableDelegate tableView:self willCollapseSection:section];
+            }
+            // Collapse the section
+            [self.mutableExpandedSections removeIndex:section];
+            [self deleteRowsAtIndexPaths:bodyIndexPathes withRowAnimation:UITableViewRowAnimationAutomatic];
+        }
+        else {
+            if ([self.collapsibleTableDelegate respondsToSelector:@selector(tableView:willExpandSection:)]) {
+                [self.collapsibleTableDelegate tableView:self willExpandSection:section];
+            }
+            // Expand the section
+            [self.mutableExpandedSections addIndex:section];
+            [self insertRowsAtIndexPaths:bodyIndexPathes withRowAnimation:UITableViewRowAnimationAutomatic];
+        }
+    }
+}
+
+#pragma mark - Getters & Setters
+
+- (NSMutableIndexSet *)mutableExpandedSections
+{
+	NSMutableIndexSet *mutableExpandedSections =
+        objc_getAssociatedObject(self, (__bridge const void *)(GWExpandedSectionsSet));
+	if (mutableExpandedSections == nil) {
+		mutableExpandedSections = [[NSMutableIndexSet alloc] init];
+		[self setMutableExpandedSections:mutableExpandedSections];
 	}
-	return expandedSectionsSet;
+	return mutableExpandedSections;
 }
 
 - (NSIndexSet *)expandedSections
 {
-	return [self getExpendedSections];
+	return [self.mutableExpandedSections copy];
 }
 
-- (void)setExpendedSections:(NSIndexSet *)expandedSections
+- (id<GWCollapsibleTableDataSource>)collapsibleTableDataSource
 {
-	objc_setAssociatedObject(self, (__bridge const void *)(GWExpendedSectionsSet), nil, OBJC_ASSOCIATION_RETAIN);
-	objc_setAssociatedObject(self, (__bridge const void *)(GWExpendedSectionsSet), expandedSections, OBJC_ASSOCIATION_RETAIN);
+    if (self.dataSource != nil && [self.dataSource conformsToProtocol:@protocol(GWCollapsibleTableDataSource)]) {
+        return (id<GWCollapsibleTableDataSource>)self.dataSource;
+    }
+    return nil;
+}
+
+- (id<GWCollapsibleTableDelegate>)collapsibleTableDelegate
+{
+    if (self.delegate != nil && [self.delegate conformsToProtocol:@protocol(GWCollapsibleTableDelegate)]) {
+        return (id<GWCollapsibleTableDelegate>)self.delegate;
+    }
+    return nil;
+}
+
+- (void)setMutableExpandedSections:(NSMutableIndexSet *)mutableExpandedSections
+{
+	objc_setAssociatedObject(self,
+                             (__bridge const void *)(GWExpandedSectionsSet),
+                             nil,
+                             OBJC_ASSOCIATION_RETAIN);
+	objc_setAssociatedObject(self,
+                             (__bridge const void *)(GWExpandedSectionsSet),
+                             mutableExpandedSections,
+                             OBJC_ASSOCIATION_RETAIN);
 }
 
 #pragma mark - UITableView Methods Substitution
 
 - (UITableViewCell *)headerCellForSection:(NSInteger)section
 {
-	return [self cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:section]];
+    NSIndexPath *headerSectionIndexPath = [self headerSectionIndexPathFromTableSection:section];
+	UITableViewCell *result = [self cellForRowAtIndexPath:headerSectionIndexPath];
+    return result;
 }
 
 - (UITableViewCell *)bodyCellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	return [self cellForRowAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row + 1 inSection:indexPath.section]];
+    NSIndexPath *bodyRowIndexPath = [self bodyRowIndexPathFromTableIndexPath:indexPath];
+	UITableViewCell *result = [self cellForRowAtIndexPath:bodyRowIndexPath];
+    return result;
+}
+
+#pragma mark Custom Selection
+
+- (void)selectHeaderSection:(NSInteger)section
+                   animated:(BOOL)animated
+             scrollPosition:(UITableViewScrollPosition)scrollPosition {
+    NSIndexPath *selectionIndexPath = [self headerSectionIndexPathFromTableSection:section];
+    [self selectRowAtIndexPath:selectionIndexPath
+                      animated:animated
+                scrollPosition:scrollPosition];
+}
+
+
+- (void)selectBodyRowAtIndexPath:(NSIndexPath *)indexPath
+                        animated:(BOOL)animated
+                  scrollPosition:(UITableViewScrollPosition)scrollPosition {
+    if ([self.mutableExpandedSections containsIndex:indexPath.section] == NO) {
+        [self toggleSection:indexPath.section];
+    }
+    
+    NSIndexPath *selectionIndexPath = [self bodyRowIndexPathFromTableIndexPath:indexPath];
+    [self selectRowAtIndexPath:selectionIndexPath
+                      animated:animated
+                scrollPosition:scrollPosition];
+}
+
+#pragma mark Custom Deselection
+
+- (void)deselectHeaderSection:(NSInteger)section
+                     animated:(BOOL)animated {
+    NSIndexPath *deselectionIndexPath = [self headerSectionIndexPathFromTableSection:section];
+    [self deselectRowAtIndexPath:deselectionIndexPath
+                        animated:animated];
+}
+
+
+- (void)deselectBodyRowAtIndexPath:(NSIndexPath *)indexPath
+                          animated:(BOOL)animated {
+    if ([self.mutableExpandedSections containsIndex:indexPath.section] == NO) {
+        return;
+    }
+    
+    NSIndexPath *deselectionIndexPath = [self bodyRowIndexPathFromTableIndexPath:indexPath];
+    [self deselectRowAtIndexPath:deselectionIndexPath
+                        animated:animated];
+}
+
+#pragma mark - Collapsible Table View Indexation
+
+- (NSArray *)bodyRowIndexPathesForSection:(NSInteger)section {
+    NSUInteger bodyRowsCount = [self.collapsibleTableDataSource tableView:self
+                                                numberOfBodyRowsInSection:section];
+    NSMutableArray *result = [NSMutableArray arrayWithCapacity:bodyRowsCount];
+    for (NSInteger row = 1; row <= bodyRowsCount; row++) {
+        [result addObject:[NSIndexPath indexPathForRow:row inSection:section]];
+    }
+    return [result copy];
+}
+
+- (NSIndexPath *)bodyRowIndexPathFromTableIndexPath:(NSIndexPath *)indexPath {
+    NSIndexPath *result = [NSIndexPath indexPathForRow:indexPath.row + 1
+                                             inSection:indexPath.section];
+    return result;
+}
+
+- (NSIndexPath *)headerSectionIndexPathFromTableSection:(NSInteger)section {
+    NSIndexPath *result = [NSIndexPath indexPathForRow:0
+                                             inSection:section];
+    return result;
 }
 
 @end

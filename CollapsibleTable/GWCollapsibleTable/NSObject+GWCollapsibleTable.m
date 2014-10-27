@@ -9,66 +9,14 @@
 #import "NSObject+GWCollapsibleTable.h"
 #import "GWCollapsibleTable.h"
 
+
 @implementation NSObject (GWCollapsibleTable)
-
-#pragma mark - General Helpers
-
-- (id<GWCollapsibleTableDataSource>)collapsibleTableDataSourceWithTableView:(UITableView *)tableView
-{
-	if (tableView.dataSource != nil && [tableView.dataSource conformsToProtocol:@protocol(GWCollapsibleTableDataSource)]) {
-		return (id<GWCollapsibleTableDataSource>)tableView.dataSource;
-	}
-//	abort();
-	return nil;
-}
-
-- (id<GWCollapsibleTableDelegate>)collapsibleTableDelegateWithTableView:(UITableView *)tableView
-{
-	if (tableView.delegate != nil && [tableView.delegate conformsToProtocol:@protocol(GWCollapsibleTableDelegate)]) {
-		return (id<GWCollapsibleTableDelegate>)tableView.delegate;
-	}
-//	abort();
-	return nil;
-}
-
-- (void)tableView:(UITableView *)tableView toggleSection:(NSInteger)section
-{
-	id<GWCollapsibleTableDataSource> dataSource = [self collapsibleTableDataSourceWithTableView:tableView];
-	id<GWCollapsibleTableDelegate> delegate = [self collapsibleTableDelegateWithTableView:tableView];
-
-	if ([dataSource tableView:tableView canCollapseSection:section]) {
-		// Prepare index paths
-		NSUInteger numberOfBodyRows = [dataSource tableView:tableView numberOfBodyRowsInSection:section];
-		NSMutableArray *indexPaths = [NSMutableArray arrayWithCapacity:numberOfBodyRows];
-		for (NSInteger i = 1; i <= numberOfBodyRows; i++) {
-			[indexPaths addObject:[NSIndexPath indexPathForRow:i inSection:section]];
-		}
-		// Expand or collapse
-		NSMutableIndexSet *expandedSections = [tableView getExpendedSections];
-		if ([expandedSections containsIndex:section]) {
-			if ([delegate respondsToSelector:@selector(tableView:willCollapseSection:)]) {
-				[delegate tableView:tableView willCollapseSection:section];
-			}
-			// Collapse the section
-			[expandedSections removeIndex:section];
-			[tableView deleteRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
-		}
-		else {
-			if ([delegate respondsToSelector:@selector(tableView:willExpandSection:)]) {
-				[delegate tableView:tableView willExpandSection:section];
-			}
-			// Expand the section
-			[expandedSections addIndex:section];
-			[tableView insertRowsAtIndexPaths:indexPaths withRowAnimation:UITableViewRowAnimationAutomatic];
-		}
-	}
-}
 
 #pragma mark - Table View Data Source
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	id<GWCollapsibleTableDataSource> dataSource = [self collapsibleTableDataSourceWithTableView:tableView];
+	id<GWCollapsibleTableDataSource> dataSource = [tableView collapsibleTableDataSource];
 	if ([dataSource tableView:tableView canCollapseSection:indexPath.section]) {
 		if (indexPath.row == 0) {
 			return [dataSource tableView:tableView headerCellForCollapsibleSection:indexPath.section];
@@ -80,7 +28,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-	id<GWCollapsibleTableDataSource> dataSource = [self collapsibleTableDataSourceWithTableView:tableView];
+	id<GWCollapsibleTableDataSource> dataSource = [tableView collapsibleTableDataSource];
 	if ([dataSource tableView:tableView canCollapseSection:section]) {
 		if (![tableView.expandedSections containsIndex:section]) {
 			return 1;
@@ -94,11 +42,11 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	id<GWCollapsibleTableDataSource> dataSource = [self collapsibleTableDataSourceWithTableView:tableView];
-	id<GWCollapsibleTableDelegate> delegate = [self collapsibleTableDelegateWithTableView:tableView];
+	id<GWCollapsibleTableDataSource> dataSource = [tableView collapsibleTableDataSource];
+	id<GWCollapsibleTableDelegate> delegate = [tableView collapsibleTableDelegate];
 	if ([dataSource tableView:tableView canCollapseSection:indexPath.section]) {
 		if (indexPath.row == 0) {
-			[self tableView:tableView toggleSection:indexPath.section];
+			[tableView toggleSection:indexPath.section];
 		}
 		else {
 			[delegate tableView:tableView didSelectBodyRowAtIndexPath:[NSIndexPath indexPathForRow:indexPath.row - 1 inSection:indexPath.section]];
