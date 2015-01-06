@@ -18,8 +18,8 @@
 
 - (void)toggleSection:(NSInteger)section;
 
-- (UITableViewCell *)headerCellForSection:(NSInteger)section;
-- (UITableViewCell *)bodyCellForRowAtIndexPath:(NSIndexPath *)indexPath;
+- (UITableViewCell *)headerCellForHeaderSection:(NSInteger)section;
+- (UITableViewCell *)bodyCellForBodyRowAtIndexPath:(NSIndexPath *)indexPath;
 
 - (void)selectHeaderSection:(NSInteger)section
                    animated:(BOOL)animated
@@ -30,7 +30,16 @@
 - (void)selectBodyRowAtIndexPath:(NSIndexPath *)indexPath
                         animated:(BOOL)animated
                   scrollPosition:(UITableViewScrollPosition)scrollPosition;
+- (void)selectBodyRowAtIndexPath:(NSIndexPath *)indexPath
+                        animated:(BOOL)animated
+                  scrollPosition:(UITableViewScrollPosition)scrollPosition
+autoExpandingSectionCallDelegate:(BOOL)callDelegate;
 - (void)deselectBodyRowAtIndexPath:(NSIndexPath *)indexPath
                           animated:(BOOL)animated;
+
+- (void)insertHeaderSections:(NSIndexSet *)sections
+            withRowAnimation:(UITableViewRowAnimation)animation;
+- (void)deleteHeaderSections:(NSIndexSet *)sections
+            withRowAnimation:(UITableViewRowAnimation)animation;
 
 @end

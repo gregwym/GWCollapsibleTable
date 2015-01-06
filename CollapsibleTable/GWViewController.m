@@ -75,14 +75,14 @@
 
 - (void)tableView:(UITableView *)tableView willCollapseSection:(NSInteger)section
 {
-	[tableView headerCellForSection:section].textLabel.text = @"Collapsed Section";
-	[tableView headerCellForSection:section].accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"UITableCollapsed"]];
+	[tableView headerCellForHeaderSection:section].textLabel.text = @"Collapsed Section";
+	[tableView headerCellForHeaderSection:section].accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"UITableCollapsed"]];
 }
 
 - (void)tableView:(UITableView *)tableView willExpandSection:(NSInteger)section
 {
-	[tableView headerCellForSection:section].textLabel.text = @"Expanded Section";
-	[tableView headerCellForSection:section].accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"UITableExpanded"]];
+	[tableView headerCellForHeaderSection:section].textLabel.text = @"Expanded Section";
+	[tableView headerCellForHeaderSection:section].accessoryView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"UITableExpanded"]];
 }
 
 @end
